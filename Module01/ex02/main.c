@@ -2,12 +2,12 @@
 #include <util/delay.h>
 
 #define PERIOD 15625
-// PREDIVISEUR divide microcontroller speed
+// PRESCALER divide microcontroller speed
 // initial speed is 16MHz => 16000000 / 1024 = 15625 Hz
 
 int main(void) {
     DDRB |= (1 << PB1);
-    TCCR1B |= (1 << CS12) | (1 << CS10); // PREDIVISEUR = 1 0 1 => 1024
+    TCCR1B |= (1 << CS12) | (1 << CS10); // PRESCALER = 1 0 1 => 1024
 
     TCCR1A |= (1 << WGM11);
     TCCR1B |= (1 << WGM13) | (1 << WGM12);

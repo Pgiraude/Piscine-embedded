@@ -3,8 +3,8 @@
 
 int main(void) {
     DDRB |= (1 << PB1);
-    TCCR1B |= (1 << CS12) | (1 << CS10); // PREDIVISEUR = 1 0 1 => 1024
-    // PREDIVISEUR divide microcontroller speed
+    TCCR1B |= (1 << CS12) | (1 << CS10); // PRESCALER = 1 0 1 => 1024
+    // PRESCALER divide microcontroller speed
     // initial speed is 16MHz => 16000000 / 1024 = 15625 Hz
     // soit 15625/2 = 7812 nb of ticks for 0.5s
     TCCR1B |= (1 << WGM12); // MODE CTC TOP => clear timer on compare match (OCR1A)
