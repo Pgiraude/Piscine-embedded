@@ -5,7 +5,7 @@
 #define PERIOD 15625 // prescaler = 1024 => 15625 Hz
 #define F_CPU 16000000UL
 #define BAUD_RATE 115200
-#define MYUBRR ((F_CPU / (16UL * BAUD_RATE)) - 1) // Asynchronous Normal mode
+#define MYUBRR ((F_CPU / (8UL * BAUD_RATE)) - 1) // Asynchronous Double Speed mode
 
 void uart_tx(unsigned char c){
     // UDRE0 = 1 => transmit buffer is empty
@@ -29,9 +29,9 @@ unsigned char uart_rx(void){
 
 void uart_init(void){
     // Set baud rate
-    const int ubrr = MYUBRR + 1;
-    UBRR0H = (unsigned char)(ubrr >> 8);
-    UBRR0L = (unsigned char)ubrr;
+    UCSR0A |= (1 << U2X0); // Double Speed mode
+    UBRR0H = (unsigned char)(MYUBRR >> 8);
+    UBRR0L = (unsigned char)MYUBRR;
 
     UCSR0B |= (1 << TXEN0); // Enable transmitter
     UCSR0B |= (1 << RXEN0); // Enable receiver

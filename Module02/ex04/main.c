@@ -2,9 +2,10 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
+#define PERIOD 15625 // prescaler = 1024 => 15625 Hz
 #define F_CPU 16000000UL
 #define BAUD_RATE 115200
-#define MYUBRR ((F_CPU / (16UL * BAUD_RATE)) - 1) // Asynchronous Normal mode
+#define MYUBRR ((F_CPU / (8UL * BAUD_RATE)) - 1) // Asynchronous Double Speed mod
 
 #define USERNAME "test"
 #define PASSWORD "1234"
@@ -103,10 +104,10 @@ int enter_input(int mode, const char *expected_input){
 }
 
 void uart_init(void){
+    UCSR0A |= (1 << U2X0); // Double Speed mode
     // Set baud rate
-    const int ubrr = MYUBRR + 1;
-    UBRR0H = (unsigned char)(ubrr >> 8);
-    UBRR0L = (unsigned char)ubrr;
+    UBRR0H = (unsigned char)(MYUBRR >> 8);
+    UBRR0L = (unsigned char)MYUBRR;
 
     UCSR0B |= (1 << TXEN0); // Enable transmitter
     UCSR0B |= (1 << RXEN0); // Enable receiver
@@ -116,18 +117,36 @@ void uart_init(void){
     UCSR0C =  (1 << UCSZ00) | (1 << UCSZ01); 
 }
 
+ISR(TIMER1_COMPA_vect){
+    PORTB ^= (1 << PB0) | (1 << PB1) | (1 << PB2) | (1 << PB4);
+}
+
 int main(void) {
+    TCCR1B |= (1 << WGM12); // MODE CTC TOP => clear timer on compare match (OCR1A)
+    TCCR1B |= (1 << CS12) | (1 << CS10); // Prescaler = 1024
+    OCR1A = PERIOD * 0.5; // nb of ticks for 0.5s
+    DDRB = (1 << PB0) | (1 << PB1) | (1 << PB2) | (1 << PB4);
+    
+    sei();
+
     uart_init();
     int is_username_successful = 0;
     int is_password_successful = 0;
     int is_login = 0;
 
     while (1) {
+        is_login = 0;
+        is_username_successful = 0;
+        is_password_successful = 0;
+        PORTB = 0x00;
+        TIMSK1 &= ~(1 << OCIE1A); // Disable timer interrupt
+
         uart_printstr("Enter your login:\r\n");
         is_username_successful = enter_input(MODE_USERNAME, USERNAME);
         is_password_successful = enter_input(MODE_PASSWORD, PASSWORD);
         is_login = is_username_successful && is_password_successful;
         if (is_login) {
+            TIMSK1 |= (1 << OCIE1A);
             uart_printstr("Login successful\r\n");
             uart_printstr("Welcome to the system some guy!\r\n");
             uart_printstr("Sorry, nothing to do here\r\n");
@@ -142,9 +161,6 @@ int main(void) {
                     uart_printstr("To exit, enter EXIT\r\n");
                 }
             }
-            is_login = 0;
-            is_username_successful = 0;
-            is_password_successful = 0;
         } else {
             uart_printstr("Bad combination username/password\r\n\r\n");
         }

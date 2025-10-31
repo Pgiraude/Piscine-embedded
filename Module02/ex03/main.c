@@ -4,7 +4,7 @@
 
 #define F_CPU 16000000UL
 #define BAUD_RATE 115200
-#define MYUBRR ((F_CPU / (16UL * BAUD_RATE)) - 1) // Asynchronous Normal mode
+#define MYUBRR ((F_CPU / (8UL * BAUD_RATE)) - 1) // Asynchronous Double Speed mode
 
 unsigned char toggle_case(unsigned char c){
     const int diff = 'a' - 'A';
@@ -30,10 +30,10 @@ void uart_printstr(const char *str){
 }
 
 void uart_init(void){
+    UCSR0A |= (1 << U2X0); // Double Speed mode
     // Set baud rate
-    const int ubrr = MYUBRR + 1;
-    UBRR0H = (unsigned char)(ubrr >> 8);
-    UBRR0L = (unsigned char)ubrr;
+    UBRR0H = (unsigned char)(MYUBRR >> 8);
+    UBRR0L = (unsigned char)MYUBRR;
 
     UCSR0B |= (1 << TXEN0); // Enable transmitter
     UCSR0B |= (1 << RXEN0); // Enable receiver
