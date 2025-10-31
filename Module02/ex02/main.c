@@ -44,8 +44,6 @@ void uart_init(void){
 int main(void) {
     uart_init();
 
-    
-
     while (1) {
         unsigned char data = uart_rx();
         uart_tx(data);
