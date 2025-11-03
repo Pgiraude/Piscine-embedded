@@ -1,0 +1,6 @@
+*.hex
+*.bin
+*.asm
+*subject.pdf
+.vscode
+.clang-format
