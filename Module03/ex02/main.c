@@ -5,8 +5,8 @@
 #define DUTY_CYCLE (F_CPU / (PRESCALER * 256))
 
 void set_rgb(uint8_t r, uint8_t g, uint8_t b) {
-    OCR0A = r;
-    OCR0B = g;
+    OCR0A = g;
+    OCR0B = r;
     OCR2B = b;
 }
 
@@ -37,13 +37,10 @@ int main(void) {
 
     int i = -1;
     while (1) {
-        while (++i < 255) {
-            wheel(i);
-            _delay_ms(10);
-        }
-        while (--i > 0) {
-            wheel(i);
-            _delay_ms(10);
+        wheel(++i);
+        _delay_ms(10);
+        if (i == 255) {
+            i = -1;
         }
     }
 
