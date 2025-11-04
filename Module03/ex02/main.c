@@ -23,7 +23,7 @@ void wheel(uint8_t pos) {
     }
 }
 
-int main(void) {
+void init_rgb(void) {
     DDRD = (1 << PD3) | (1 << PD6) | (1 << PD5);
 
     TCCR0A |= (1 << WGM00) | (1 << WGM01); // Fast PWM mode
@@ -34,6 +34,10 @@ int main(void) {
     TCCR2A |= (1 << WGM20) | (1 << WGM21); // Fast PWM mode
     TCCR2A |= (1 << COM2B1);
     TCCR2B |= (1 << CS22) | (1 << CS21); // Prescaler = 256
+}
+
+int main(void) {
+    init_rgb();
 
     int i = -1;
     while (1) {

@@ -58,7 +58,7 @@ void convert_hex_to_rgb(char *input) {
     set_rgb(r, g, b);
 }
 
-void leds_init(void) {
+void init_rgb(void) {
     DDRD = (1 << PD3) | (1 << PD6) | (1 << PD5);
 
     TCCR0A |= (1 << WGM00) | (1 << WGM01); // Fast PWM mode
@@ -72,7 +72,7 @@ void leds_init(void) {
 }
 
 int main(void) {
-    leds_init();
+    init_rgb();
     uart_init();
 
     const uint8_t max_prompt_size = 7;
