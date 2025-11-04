@@ -1,0 +1,99 @@
+# Générateur de README pour Modules
+
+Quand l'utilisateur demande de créer un README pour un module, génère un fichier README.md structuré selon le format suivant :
+
+## Structure du README
+
+### 1. En-tête
+```markdown
+# Module XX: [Titre du Module]
+```
+
+### 2. Overview
+- Une brève description du module (2-3 phrases)
+- Indique les concepts principaux abordés
+
+### 3. Theoretical Concepts
+- Liste les concepts théoriques clés avec des définitions concises
+- Format: **Concept**: Explication brève
+- Utilise des termes techniques précis
+
+### 4. Exercices
+Pour chaque exercice, inclure :
+```markdown
+---
+
+## Exercise XX: [Nom de l'exercice]
+
+**Goal**: [Objectif pédagogique en une phrase]
+
+**Requirements**: [Description des exigences techniques]
+
+**Key Concept(s)**: [Concepts clés à retenir]
+
+---
+```
+
+### 5. Skills Developed
+- Liste à puces des compétences acquises
+- Concepts généraux transférables
+
+### 6. Formulas (optionnel)
+- Si le module contient des formules importantes
+- Format en bloc de code pour la lisibilité
+
+## Style et ton
+
+- **Toujours écrire en anglais**
+- Concis et technique (éviter les phrases trop longues)
+- Orienté pédagogie et compréhension
+- Évite les détails d'implémentation (le code source les contient)
+- Met l'accent sur les **concepts** plutôt que les instructions
+
+## Exemples de titres d'exercices
+
+- "Setup", "First Steps", "Blinker"
+- Utilise des noms évocateurs et mémorables
+- Peut inclure des références culturelles (ex: "Lumos", "A Glimmer of Hope")
+
+## Processus de génération (AUTOMATISÉ)
+
+1. Identifier le module demandé (ex: Module02, Rush00)
+
+2. Lancer le script d'extraction automatique :
+   ```bash
+   ./scripts/extract-subject.sh Module[XX]
+   ```
+   Ce script extrait automatiquement le PDF en subject.txt
+
+3. **ARRÊT OBLIGATOIRE** : Si le script échoue ou si subject.txt n'existe pas/ne peut pas être généré, ARRÊTER le processus et informer l'utilisateur
+
+4. **VALIDATION DU TITRE** :
+   - Lire le titre du sujet dans subject.txt (généralement en début de fichier)
+   - Vérifier que le titre correspond au module demandé (ex: "Module 02" pour Module02, "Rush 00" pour Rush00)
+   - Si le titre ne correspond PAS : ARRÊTER et informer l'utilisateur de l'incohérence
+
+5. Analyser le fichier Module[XX]/subject.txt pour extraire :
+   - Le thème du module
+   - Les concepts théoriques
+   - La description de chaque exercice
+   - Les objectifs pédagogiques
+
+6. Générer le README complet en anglais selon la structure définie
+
+7. Enregistrer le README dans Module[XX]/README.md
+
+8. **Nettoyer** : supprimer le fichier subject.txt temporaire après génération
+
+**Important** : 
+- Toujours commencer par lancer le script d'extraction avant de lire le subject.txt
+- Ne JAMAIS générer de README sans le fichier subject.txt source
+- Vérifier la cohérence titre/dossier avant de continuer
+
+## Notes importantes
+
+- Ne jamais inclure de code complet dans le README
+- Privilégier la compréhension conceptuelle
+- Garder un style uniforme entre les modules
+- Les formules doivent être formatées clairement
+
