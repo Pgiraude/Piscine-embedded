@@ -1,3 +1,4 @@
 [submodule "Rush00"]
 	path = Rush00
 	url = git@github.com:Pgiraude/piscine-embedded-rush-00.git
+	branch = main
