@@ -1,9 +1,15 @@
 #include "main.h"
 
-const char hex_chars[] = {'0', '1', '2', '3', '4', '5', '6', '7',
-                          '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+const char hex_chars_upper[] = {'0', '1', '2', '3', '4', '5', '6', '7',
+                                '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+const char hex_chars_lower[] = {'0', '1', '2', '3', '4', '5', '6', '7',
+                                '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 void set_rgb(uint8_t r, uint8_t g, uint8_t b) {
+    (g == 0) ? (DDRD &= ~(1 << PD6)) : (DDRD |= (1 << PD6));
+    (r == 0) ? (DDRD &= ~(1 << PD5)) : (DDRD |= (1 << PD5));
+    (b == 0) ? (DDRD &= ~(1 << PD3)) : (DDRD |= (1 << PD3));
     OCR0A = g;
     OCR0B = r;
     OCR2B = b;
@@ -11,8 +17,15 @@ void set_rgb(uint8_t r, uint8_t g, uint8_t b) {
 
 int8_t get_hex_index(char c) {
     uint8_t index = 0;
-    while (hex_chars[index]) {
-        if (hex_chars[index] == c) {
+    while (hex_chars_upper[index]) {
+        if (hex_chars_upper[index] == c) {
+            return index;
+        }
+        index++;
+    }
+    index = 0;
+    while (hex_chars_lower[index]) {
+        if (hex_chars_lower[index] == c) {
             return index;
         }
         index++;
@@ -59,8 +72,6 @@ void convert_hex_to_rgb(char *input) {
 }
 
 void init_rgb(void) {
-    DDRD = (1 << PD3) | (1 << PD6) | (1 << PD5);
-
     TCCR0A |= (1 << WGM00) | (1 << WGM01); // Fast PWM mode
     TCCR0B |= (1 << CS02);                 // Prescaler = 256
     // clear on compare match, set at BOTTOM so = 1

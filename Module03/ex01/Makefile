@@ -28,7 +28,7 @@ DUMPER_TOOL = avr-objdump
 # ========================================
 # COMPILER FLAGS
 # ========================================
-CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os
+CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -Wall -Wextra -Werror
 
 # ========================================
 # TARGETS
