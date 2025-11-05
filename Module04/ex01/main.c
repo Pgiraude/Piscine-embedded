@@ -1,7 +1,7 @@
 #include "main.h"
 #define TOP_VALUE 1024
-#define LED_CYCLES (16000000UL / (1024UL * 510)) / 2
-#define STEPS TOP_VALUE / LED_CYCLES
+#define LED_CYCLES ((16000000UL / (1024UL * 510)) / 2)
+#define STEPS (TOP_VALUE / LED_CYCLES)
 
 ISR(TIMER0_OVF_vect) {
     static int8_t direction = 1;

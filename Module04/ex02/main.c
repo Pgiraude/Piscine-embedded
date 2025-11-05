@@ -32,8 +32,8 @@ ISR(PCINT2_vect) {
         count--;
         led_value_convertor(count);
     }
+    _delay_ms(5);
     lst_portd_state = cur_portd_state;
-    _delay_ms(20);
     PCIFR |= (1 << PCIF2);
 }
 
