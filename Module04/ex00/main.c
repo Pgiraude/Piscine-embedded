@@ -1,14 +1,14 @@
 #include "main.h"
 
-ISR(PCINT2_vect) {
+ISR_PIN_CHANGE_2 {
 
     static uint8_t is_pressed = 0;
     is_pressed = (is_pressed + 1) % 2;
 
     if (is_pressed) {
         PORTB ^= (1 << PB0);
+        _delay_ms(2);
     }
-    _delay_ms(20);
     // PCIFR => Pin change interrupt flag register
     PCIFR |= (1 << PCIF2); // clear interrupt flag
 }

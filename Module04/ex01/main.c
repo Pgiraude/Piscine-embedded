@@ -3,7 +3,7 @@
 #define LED_CYCLES ((16000000UL / (1024UL * 510)) / 2)
 #define STEPS (TOP_VALUE / LED_CYCLES)
 
-ISR(TIMER0_OVF_vect) {
+ISR_TC0_OVERFLOW {
     static int8_t direction = 1;
     static uint32_t cycle = 0;
 

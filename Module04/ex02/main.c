@@ -15,7 +15,7 @@ void led_value_convertor(uint8_t value) {
         PORTB |= (1 << PB4); // Bit3 → PB4
 }
 
-ISR(PCINT2_vect) {
+ISR_PIN_CHANGE_2 {
     static uint8_t lst_portd_state = 0xFF;
     // Check electric states => pull-up = 1 et pull-down = 0
     uint8_t cur_portd_state = PIND;
@@ -26,15 +26,20 @@ ISR(PCINT2_vect) {
     if ((changed & (1 << PD2)) && !(cur_portd_state & (1 << PD2))) {
         count++;
         led_value_convertor(count);
+        while (!(PIND & (1 << PD2))) {
+            _delay_ms(1);
+        }
+        PCIFR |= (1 << PCIF2);
     }
     // PD4 changes decrement only on pull-down
     if ((changed & (1 << PD4)) && !(cur_portd_state & (1 << PD4))) {
         count--;
         led_value_convertor(count);
+        _delay_ms(5);
+        PCIFR |= (1 << PCIF2);
     }
-    _delay_ms(5);
     lst_portd_state = cur_portd_state;
-    PCIFR |= (1 << PCIF2);
+    // PCIFR |= (1 << PCIF2);
 }
 
 int main(void) {
