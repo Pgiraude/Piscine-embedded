@@ -1,0 +1,16 @@
+#ifndef MAIN_H
+#define MAIN_H
+
+#include <avr/io.h>
+#include <util/twi.h>
+
+void uart_init(void);
+void uart_printstr(const char *str);
+char *enter_prompt(char *prompt, uint16_t max_prompt_size);
+int8_t convert_decimal_to_hex(const uint16_t value, char *hex_str,
+                              uint8_t hex_size, uint8_t nbr_digits);
+int8_t itoa(const uint16_t value, char *str, uint8_t str_size);
+
+uint16_t ft_strlen(char *str);
+
+#endif
