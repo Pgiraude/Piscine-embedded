@@ -25,6 +25,35 @@ int8_t ft_strcmp(const char *str1, const char *str2) {
     return 0;
 }
 
+int8_t itoa(const uint16_t value, char *str, uint8_t str_size) {
+    int16_t len = 0;
+    int16_t val = value;
+    while (val > 0) {
+        val /= 10;
+        len++;
+    }
+    if (!str || len > str_size - 1) {
+        return -1;
+    }
+
+    if (value == 0) {
+        *str = '0';
+        str++;
+        *str = '\0';
+        return 1;
+    }
+
+    val = value;
+    int16_t index = len - 1;
+    while (val > 0) {
+        str[index] = '0' + (val % 10);
+        val /= 10;
+        index--;
+    }
+    str[len] = '\0';
+    return 1;
+}
+
 const char hex_chars_upper[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                 '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
@@ -51,13 +80,13 @@ int8_t get_hex_index(char c) {
 
 int8_t convert_decimal_to_hex(const uint16_t value, char *hex_str,
                               uint8_t hex_size, uint8_t nbr_digits) {
-    uint16_t len = 0;
+    int16_t len = 0;
     uint16_t val = value;
     while (val > 0) {
         val /= 16;
         len++;
     }
-    uint8_t max_size = hex_size - 1;
+    int8_t max_size = hex_size - 1;
     if (!hex_str || len > max_size || nbr_digits > max_size) {
         return -1;
     }

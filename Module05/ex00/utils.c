@@ -49,28 +49,44 @@ int8_t get_hex_index(char c) {
     return -1;
 }
 
-void convert_decimal_to_hex(const uint16_t value, char *hex_str) {
-    if (value == 0) {
-        hex_str[0] = '0';
-        hex_str[1] = '\0';
-        return;
-    }
-
-    uint16_t val = value;
+int8_t convert_decimal_to_hex(const uint16_t value, char *hex_str,
+                              uint8_t hex_size, uint8_t nbr_digits) {
     uint16_t len = 0;
-
+    uint16_t val = value;
     while (val > 0) {
         val /= 16;
         len++;
     }
+    uint8_t max_size = hex_size - 1;
+    if (!hex_str || len > max_size || nbr_digits > max_size) {
+        PORTB = (1 << PB1);
+        return -1;
+    }
+
+    if (value == 0) {
+        (nbr_digits == 0) ? nbr_digits++ : nbr_digits;
+        while (nbr_digits-- > 0) {
+            *hex_str = '0';
+            hex_str++;
+        }
+        *hex_str = '\0';
+        return 1;
+    }
+
     val = value;
-    int16_t index = len - 1;
-    while (index >= 0) {
+    uint8_t hex_str_len = (nbr_digits > len) ? nbr_digits : len;
+    int16_t index = hex_str_len - 1;
+    while (val > 0) {
         hex_str[index] = hex_chars_upper[val % 16];
         val /= 16;
         index--;
     }
-    hex_str[len] = '\0';
+    while (index >= 0) {
+        hex_str[index] = '0';
+        index--;
+    }
+    hex_str[hex_str_len] = '\0';
+    return 1;
 }
 
 int16_t convert_hex_to_decimal(char *input, uint8_t end) {

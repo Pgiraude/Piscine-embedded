@@ -26,17 +26,15 @@ ISR_PIN_CHANGE_2 {
     if ((changed & (1 << PD2)) && !(cur_portd_state & (1 << PD2))) {
         count++;
         led_value_convertor(count);
-        while (!(PIND & (1 << PD2))) {
-            _delay_ms(5);
-        }
+        // _delay_ms(5);
     }
     // PD4 changes decrement only on pull-down
     if ((changed & (1 << PD4)) && !(cur_portd_state & (1 << PD4))) {
         count--;
         led_value_convertor(count);
-        _delay_ms(5);
     }
     lst_portd_state = cur_portd_state;
+    _delay_ms(5);
     PCIFR |= (1 << PCIF2);
 }
 
