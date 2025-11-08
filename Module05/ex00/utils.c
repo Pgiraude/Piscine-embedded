@@ -49,6 +49,30 @@ int8_t get_hex_index(char c) {
     return -1;
 }
 
+void convert_decimal_to_hex(const uint16_t value, char *hex_str) {
+    if (value == 0) {
+        hex_str[0] = '0';
+        hex_str[1] = '\0';
+        return;
+    }
+
+    uint16_t val = value;
+    uint16_t len = 0;
+
+    while (val > 0) {
+        val /= 16;
+        len++;
+    }
+    val = value;
+    int16_t index = len - 1;
+    while (index >= 0) {
+        hex_str[index] = hex_chars_upper[val % 16];
+        val /= 16;
+        index--;
+    }
+    hex_str[len] = '\0';
+}
+
 int16_t convert_hex_to_decimal(char *input, uint8_t end) {
     const uint8_t len = ft_strlen(input);
     if (end > len || len == 0) {
