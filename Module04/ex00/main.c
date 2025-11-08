@@ -7,7 +7,7 @@ ISR_PIN_CHANGE_2 {
 
     if (is_pressed) {
         PORTB ^= (1 << PB0);
-        _delay_ms(2);
+        _delay_ms(5);
     }
     // PCIFR => Pin change interrupt flag register
     PCIFR |= (1 << PCIF2); // clear interrupt flag
