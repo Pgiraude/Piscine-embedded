@@ -1,5 +1,7 @@
 #include "main.h"
 
+#define AHT20_ADRESSE 0x38
+
 typedef enum { ERROR_1 = (1 << PB0) } t_error;
 
 void ft_error(t_error error) {
