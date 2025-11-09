@@ -16,6 +16,7 @@ void led_value_convertor(uint8_t value) {
 }
 
 ISR_PIN_CHANGE_2 {
+
     static uint8_t lst_portd_state = 0xFF;
     // Check electric states => pull-up = 1 et pull-down = 0
     uint8_t cur_portd_state = PIND;
