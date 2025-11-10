@@ -55,6 +55,9 @@ flash: $(NAME).hex
 disasm: $(NAME).bin
 	$(DUMPER_TOOL) -d $(NAME).bin > $(NAME).asm
 
+show: all
+	screen $(PORT) $(BAUD_RATE)
+
 # Clean generated files
 clean:
 	rm -f $(NAME).bin $(NAME).hex $(NAME).asm

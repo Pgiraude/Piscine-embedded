@@ -1,11 +1,10 @@
 #include "main.h"
 
+#define IS_AHT20_INIT 0x71
 #define INIT_AHT20 0xBE
 #define AHT20_ADRESSE 0x38
 #define WRITE 0
 #define READ 1
-
-#include <util/delay.h>
 
 typedef enum {
     ERROR_1 = (1 << PB0),
@@ -75,27 +74,26 @@ int main(void) {
     uart_init();
     i2c_init();
 
+    uint8_t status = 0;
+
     i2c_start();
     i2c_write(INIT_AHT20);
-    uart_tx(i2c_status());
+    status = i2c_status();
+    uart_tx(status);
+    if (status == TW_MT_DATA_ACK) {
+        uart_printstr(" => TW_MT_DATA_ACK");
+    }
     uart_printstr("\r\n");
     i2c_stop();
-    _delay_ms(40);
-
-    i2c_start(); // check if init done
-    i2c_write(0x71);
-    uart_tx(i2c_status());
-    uart_printstr("\r\n");
-    i2c_stop();
-    _delay_ms(10); // if ok wait 10ms
+    // _delay_ms(50);
 
     while (1) {
-        i2c_start();
-        i2c_write('A');
-        uart_tx(i2c_status());
-        uart_printstr("\r\n");
-        i2c_stop();
-        _delay_ms(50);
+        // i2c_start(); // check if init done
+        // i2c_write(IS_AHT20_INIT);
+        // uart_tx(i2c_status());
+        // uart_printstr("\r\n");
+        // i2c_stop();
+        // _delay_ms(10);
     }
 
     return 0;

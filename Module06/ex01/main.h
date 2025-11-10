@@ -2,6 +2,7 @@
 #define MAIN_H
 
 #include <avr/io.h>
+#include <util/delay.h>
 #include <util/twi.h>
 
 void uart_init(void);
