@@ -29,9 +29,9 @@ void ft_error(t_error error) {
 }
 
 void print_hex_value(char c) {
-    char buffer_size = 3;
+    char buffer_size = 10;
     char buffer[buffer_size];
-    convert_decimal_to_hex(c, buffer, buffer_size, 2);
+    convert_decimal_to_hex((uint8_t)c, buffer, buffer_size, 2);
     uart_printstr(buffer);
     uart_printstr(" ");
 }
@@ -41,15 +41,12 @@ uint8_t i2c_status(void) {
                                     // (prescaler + reserve bits)
 }
 
-void i2c_write(uint8_t data) // send data  ? need to put adresse somewere
+void i2c_write(unsigned char data) // send data  ? need to put adresse somewere
 {
     TWCR = (1 << TWINT) | (1 << TWEN);
 
     while (!(TWCR & (1 << TWINT))) {
     }
-
-    // if ((TWSR & TW_STATUS_MASK) != TW_MT_SLA_ACK)
-    //     ft_error(ERROR_2);
     TWDR = data;
     TWCR = (1 << TWINT) | (1 << TWEN);
 
@@ -61,6 +58,8 @@ void i2c_read_ACK(void) {
     TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA);
     while (!(TWCR & (1 << TWINT))) {
     }
+    if (i2c_status() != TW_MR_DATA_ACK)
+        ft_error(ERROR_3);
     print_hex_value(TWDR);
 }
 
@@ -68,18 +67,15 @@ void i2c_read_NACK(void) {
     TWCR = (1 << TWINT) | (1 << TWEN); // NACK
     while (!(TWCR & (1 << TWINT))) {
     }
-    print_hex_value(TWDR);
+    if (i2c_status() != TW_MR_DATA_NACK)
+        ft_error(ERROR_4);
+    print_hex_value((uint8_t)TWDR);
 }
 
 void i2c_read(void) {
-    TWDR = (AHT20_ADRESSE << 1) | READ; // send adress and mode
-
     TWCR = (1 << TWINT) | (1 << TWEN);
     while (!(TWCR & (1 << TWINT))) {
     }
-
-    // if ((TWSR & TW_STATUS_MASK) != TW_MT_SLA_ACK)
-    //     ft_error(ERROR_2);
 
     for (int i = 0; i < 7; i++) {
         if (i < 6) {
@@ -88,9 +84,6 @@ void i2c_read(void) {
             i2c_read_NACK();
         }
     }
-
-    // if ((TWSR & TW_STATUS_MASK) != TW_MR_DATA_NACK)
-    //     ft_error(ERROR_4);
 }
 
 void i2c_init(void) {
@@ -116,43 +109,30 @@ int main(void) {
     i2c_init();
     _delay_ms(40);
 
-    uint8_t status = 0;
-
     i2c_start();
     TWDR = (AHT20_ADRESSE << 1) | WRITE;
     i2c_write(INIT_AHT20);
-    status = i2c_status();
-    uart_tx(status);
     i2c_write(0x08);
-    status = i2c_status();
-    uart_tx(status);
     i2c_write(0x00); // pas d ACK ici
-
-    uart_printstr("\r\n");
     i2c_stop();
     _delay_ms(40);
 
-    i2c_start(); // check if init done
-    TWDR = (AHT20_ADRESSE << 1) | WRITE;
-    i2c_write(0xAC);
-    status = i2c_status();
-    uart_tx(status);
-    i2c_write(0x33);
-    status = i2c_status();
-    uart_tx(status);
-    i2c_write(0x00);
+    while (1) {
+        i2c_start(); // check if init done
+        TWDR = (AHT20_ADRESSE << 1) | WRITE;
+        i2c_write(0xAC);
+        i2c_write(0x33);
+        i2c_write(0x00);
+        i2c_stop();
+        _delay_ms(100); // if ok wait min wait 85ms
 
-    uart_printstr("\r\n");
-    i2c_stop();
-    _delay_ms(80); // if ok wait 10ms
-
-    i2c_start(); // check if init done
-    i2c_read();
-    status = i2c_status();
-    uart_tx(status);
-    uart_printstr("\r\n");
-    i2c_stop();
-    _delay_ms(10); // if ok wait 10ms
+        i2c_start();                        // check if init done
+        TWDR = (AHT20_ADRESSE << 1) | READ; // send adress and mode
+        i2c_read();
+        uart_printstr("\r\n");
+        i2c_stop();
+        _delay_ms(2000); // cf documentation
+    }
 
     return 0;
 }

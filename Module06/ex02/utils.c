@@ -25,9 +25,9 @@ int8_t ft_strcmp(const char *str1, const char *str2) {
     return 0;
 }
 
-int8_t itoa(const uint16_t value, char *str, uint8_t str_size) {
+int8_t ft_itoa(const uint32_t value, char *str, uint8_t str_size) {
     int16_t len = 0;
-    int16_t val = value;
+    int32_t val = value;
     while (val > 0) {
         val /= 10;
         len++;
