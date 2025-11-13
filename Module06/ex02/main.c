@@ -3,6 +3,7 @@
 #define AHT20_ADRESSE 0x38
 #define WRITE 0
 #define READ 1
+#define NB_MEASUREMENTS 3
 
 typedef enum {
     ERROR_1 = (1 << PB0),
@@ -164,8 +165,7 @@ void print_round_up_significant(float value, char *round_buff) {
 
 int main(void) {
 
-    uint8_t nb_mesures = 3;
-    uint8_t tab[nb_mesures][7];
+    uint8_t tab[NB_MEASUREMENTS][7];
     char buffer[20];
 
     uart_init();
@@ -212,11 +212,11 @@ int main(void) {
         i2c_stop();
         _delay_ms(2000);
 
-        index++;
         if (mesure_count < 3) {
             mesure_count++;
         }
-        if (index == nb_mesures)
+        index++;
+        if (index == NB_MEASUREMENTS)
             index = 0;
     }
 
