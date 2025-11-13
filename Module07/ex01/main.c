@@ -70,9 +70,9 @@ int main(void) {
     while (1) {
         enter_prompt(prompt, MAX_PROMPT_SIZE);
         res = parse_and_check_eeprom(prompt);
-        if (res.status == -1) {
+        if (res.status == PARSING_ERROR) {
             uart_printstr("incorrect format\r\n");
-        } else if (res.status == 1) {
+        } else if (res.status == EEPROM_MISMATCH) {
             eeprom_write_byte((uint8_t *)res.address, res.value);
             print_eeprom_status(res.address, 1);
         } else {
