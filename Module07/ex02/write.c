@@ -98,7 +98,7 @@ int8_t write_eeprom(uint8_t *prompt) {
         uart_printstr("No space left");
     }
 
-    if (loop_write(key) == PARSING_ERROR) {
+    if (addr_next_save && loop_write(key) == PARSING_ERROR) {
         uart_printstr("already exists\r\n");
         return PARSING_ERROR;
     }
